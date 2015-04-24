@@ -52,6 +52,7 @@
     <Compile Include="src\PAssetDownLoad.cs" />
     <Compile Include="src\PAssetLoader.cs" />
     <Compile Include="src\PAssetManager.cs" />
+    <Compile Include="src\TimeUtil.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Editor\" />

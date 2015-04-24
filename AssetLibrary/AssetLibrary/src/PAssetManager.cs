@@ -25,7 +25,7 @@ namespace AssetLibrary
             self = this;
         }
         
-        public void LoadAsset(PAsset asset, string assetName,Action<string,bool> action)
+        public void LoadAsset(PAsset asset, string assetName)
         {
             if (m_tableLoaded.Contains(assetName))
             {
@@ -36,7 +36,7 @@ namespace AssetLibrary
             else
             {
                 List<PAssetLoader> loaderList = new List<PAssetLoader>();
-                loaderList.Add(new PAssetLoader(asset, action));
+                loaderList.Add(new PAssetLoader(asset));
 
                 m_tableLoading[assetName] = loaderList;
 
@@ -64,6 +64,39 @@ namespace AssetLibrary
 
         public void LoadFailure(string assetName)
         {
+        }
+
+        Dictionary<string, int> m_assetRefCount = new Dictionary<string, int>();
+        Dictionary<string, uint> m_assetCache = new Dictionary<string, uint>();
+
+        public void IncrAssetRef(string assetName)
+        {
+            if (m_assetRefCount.ContainsKey(assetName))
+            {
+                m_assetRefCount[assetName]++;
+            }
+            else
+            {
+                m_assetRefCount[assetName] = 1;
+                if (m_assetCache.ContainsKey(assetName))
+                {
+                    m_assetCache.Remove(assetName);
+                }
+            }
+        }
+
+        public void DecrAssetRef(string assetName)
+        {
+            if (m_assetRefCount.ContainsKey(assetName))
+            {
+                m_assetRefCount[assetName]--;
+                if (m_assetRefCount[assetName] == 0)
+                {
+                    m_assetRefCount.Remove(assetName);
+
+                    m_assetCache[assetName] = TimeUtil.Now;
+                }
+            }
         }
     }
 }

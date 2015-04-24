@@ -1,0 +1,11 @@
+C:\Users\Administrator\PAssetLibrary\AssetLibrary\AssetLibrary\obj\Debug\AssetLibrary.csprojResolveAssemblyReference.cache
+C:\Users\Administrator\PAssetLibrary\AssetLibrary\AssetLibrary\bin\Debug\AssetLibrary.dll
+C:\Users\Administrator\PAssetLibrary\AssetLibrary\AssetLibrary\bin\Debug\AssetLibrary.pdb
+C:\Users\Administrator\PAssetLibrary\AssetLibrary\AssetLibrary\bin\Debug\UnityEditor.dll
+C:\Users\Administrator\PAssetLibrary\AssetLibrary\AssetLibrary\bin\Debug\UnityEngine.dll
+C:\Users\Administrator\PAssetLibrary\AssetLibrary\AssetLibrary\bin\Debug\Mono.Cecil.dll
+C:\Users\Administrator\PAssetLibrary\AssetLibrary\AssetLibrary\bin\Debug\nunit.framework.dll
+C:\Users\Administrator\PAssetLibrary\AssetLibrary\AssetLibrary\bin\Debug\Unity.DataContract.dll
+C:\Users\Administrator\PAssetLibrary\AssetLibrary\AssetLibrary\bin\Debug\ICSharpCode.NRefactory.dll
+C:\Users\Administrator\PAssetLibrary\AssetLibrary\AssetLibrary\obj\Debug\AssetLibrary.dll
+C:\Users\Administrator\PAssetLibrary\AssetLibrary\AssetLibrary\obj\Debug\AssetLibrary.pdb

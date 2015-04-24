@@ -11,10 +11,10 @@ namespace AssetLibrary
         public PAsset m_asset;
         public Action<string,bool> m_action;
 
-        public PAssetLoader(PAsset asset, Action<string,bool> action)
+        public PAssetLoader(PAsset asset)
         {
             m_asset = asset;
-            m_action = action;
+            m_action = asset.LoadCallBack;
         }
 
         public void LoadSuccess(string name)
