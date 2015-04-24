@@ -13,7 +13,7 @@ namespace AssetLibrary
     {
         public static PAssetManager self;
 
-        PAssetDownLoad m_downLoad = new PAssetDownLoad();
+        public PiAssetDownLoad m_downLoad;
         //<string,Asset>
         static Hashtable m_tableLoaded = new Hashtable();
         static Hashtable m_tableLoading = new Hashtable();

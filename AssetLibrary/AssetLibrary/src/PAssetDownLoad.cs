@@ -15,6 +15,11 @@ namespace AssetLibrary
 
     public class PAssetDownLoad : MonoBehaviour,PiAssetDownLoad
     {
+        void Awake()
+        {
+            PAssetManager.self.m_downLoad = this;
+        }
+
         public virtual void DownLoad(string assetName, Action<string,bool, AssetBundle> action)
         {
         }
