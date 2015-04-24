@@ -8,9 +8,14 @@ using UnityEngine;
 
 namespace AssetLibrary
 {
-    public class PAssetDownLoad
+    public interface PiAssetDownLoad
     {
-        public void DownLoad(string assetName, Action<string,bool, AssetBundle> action)
+        void DownLoad(string assetName, Action<string, bool, AssetBundle> action);
+    }
+
+    public class PAssetDownLoad : MonoBehaviour,PiAssetDownLoad
+    {
+        public virtual void DownLoad(string assetName, Action<string,bool, AssetBundle> action)
         {
         }
 
@@ -20,6 +25,8 @@ namespace AssetLibrary
 
         public void DownLoadFromLocal(string assetName, Action<string, bool, AssetBundle> action)
         {
+            string url = assetName;
+            StartCoroutine(DownLoadFromUrl(assetName,url,action));
         }
 
         public void DownLoadFromCache(string assetName, Action<string, bool, AssetBundle> action)

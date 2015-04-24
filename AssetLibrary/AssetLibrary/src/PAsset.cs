@@ -55,7 +55,6 @@ namespace AssetLibrary
 
         public void Load(string assetName, Action<string,bool> action)
         {
-            //liyupeng waiting 验证
             if (m_assetAction.ContainsKey(assetName))
             {
                 m_assetAction[assetName] += action;
