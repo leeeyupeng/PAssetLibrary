@@ -9,9 +9,21 @@ using UnityEngine;
 
 namespace AssetLibrary
 {
+    public enum MemoryPolicy
+    {
+        Immediate = 0,
+        IntervalCache,
+        Manul,
+        OccupySpace,
+        SurplusSpace,
+        Count,
+    }
+
     public class PAssetManager : MonoBehaviour
     {
         public static PAssetManager self;
+
+        public MemoryPolicy m_memoryPolicy;
 
         public PiAssetDownLoad m_downLoad;
         //<string,Asset>
@@ -20,9 +32,39 @@ namespace AssetLibrary
         //sender type != MonoBehaviour
         Dictionary<object, PAsset> m_dicLoader = new Dictionary<object, PAsset>();
 
+        uint m_lastClearAssetTime = 0;
+        public uint m_intervalCheckTime = 5;
+
+        public uint m_intervalCacheTime = 60;
+
         void Awake()
         {
             self = this;
+        }
+
+
+        void Update()
+        {
+            if (m_lastClearAssetTime + m_intervalCheckTime < TimeUtil.Now)
+            {
+                m_lastClearAssetTime = TimeUtil.Now;
+                if (m_memoryPolicy == MemoryPolicy.Immediate)
+                {
+                    UnLoadUnUseAsset();
+                }
+                else if (m_memoryPolicy == MemoryPolicy.IntervalCache)
+                {
+                    UnLoadUnUseAsset_IntervalCache(m_intervalCacheTime);
+                }
+                else if (m_memoryPolicy == MemoryPolicy.OccupySpace)
+                {
+                    UnLoadUnUseAsset();
+                }
+                else if (m_memoryPolicy == MemoryPolicy.SurplusSpace)
+                {
+                    UnLoadUnUseAsset();
+                }
+            }
         }
         
         public AssetBundle GetAsset(string assetName)
@@ -56,6 +98,18 @@ namespace AssetLibrary
 
                 m_downLoad.DownLoad(assetName,LoadCallBack);
             }
+        }
+
+        public void UnLoadUnUseAsset()
+        {
+            foreach(KeyValuePair<string,uint> asset in m_assetCache)
+            {
+
+            }
+        }
+
+        public void UnLoadUnUseAsset_IntervalCache(uint time)
+        {
         }
 
         public void LoadCallBack(string assetName, bool success, AssetBundle bundle)
