@@ -25,13 +25,27 @@ namespace AssetLibrary
             self = this;
         }
         
+        public AssetBundle GetAsset(string assetName)
+        {
+            if (m_tableLoaded.ContainsKey(assetName))
+            {
+                return (AssetBundle)m_tableLoaded[assetName];
+            }
+
+            Debug.LogError("AssetLibrary error");
+            return null;
+        }
+
         public void LoadAsset(PAsset asset, string assetName)
         {
             if (m_tableLoaded.Contains(assetName))
             {
+                LoadFinish(assetName);
             }
             else if (m_tableLoading.Contains(assetName))
             {
+                List<PAssetLoader> listLoader = (List<PAssetLoader>)m_tableLoading[assetName];
+                listLoader.Add(new PAssetLoader(asset));
             }
             else
             {
@@ -60,10 +74,24 @@ namespace AssetLibrary
 
         public void LoadFinish(string assetName)
         {
+            List<PAssetLoader> listLoader = (List<PAssetLoader>)m_tableLoading[assetName];
+            foreach (PAssetLoader loader in listLoader)
+            {
+                loader.LoadSuccess(assetName);
+            }
+            listLoader.Clear();
+            m_tableLoading.Remove(assetName);
         }
 
         public void LoadFailure(string assetName)
         {
+            List<PAssetLoader> listLoader = (List<PAssetLoader>)m_tableLoading[assetName];
+            foreach (PAssetLoader loader in listLoader)
+            {
+                loader.LoadFail(assetName);
+            }
+            listLoader.Clear();
+            m_tableLoading.Remove(assetName);
         }
 
         Dictionary<string, int> m_assetRefCount = new Dictionary<string, int>();

@@ -55,7 +55,16 @@ namespace AssetLibrary
 
         public void Load(string assetName, Action<string,bool> action)
         {
-            m_assetAction[assetName] += action;
+            //liyupeng waiting 验证
+            if (m_assetAction.ContainsKey(assetName))
+            {
+                m_assetAction[assetName] += action;
+            }
+            else
+            {
+                m_assetAction[assetName] = new Action<string,bool>(action);
+            }
+            
             PAssetManager.self.LoadAsset(this,assetName);
         }
 
@@ -87,6 +96,15 @@ namespace AssetLibrary
                     PAssetManager.self.IncrAssetRef(assetName);
                     m_assetUsing.Add(assetName);
                 }
+            }
+            else
+            {
+                Debug.Log("load error");
+            }
+
+            if (m_assetAction.ContainsKey(assetName))
+            {
+                m_assetAction[assetName](assetName, success);
             }
         }
     }
