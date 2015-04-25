@@ -30,6 +30,54 @@ namespace AssetLibrary.Editor
             _WriteDependency(dependencyTable);
         }
 
+        [@MenuItem("AssetBundle/All/BuildAllAssetBundle")]
+        public static void BuildAllAssetBundle()
+        {
+            string[] src_path_list = new string[] { "Resources", "Scene" };
+
+            Hashtable dependencyTable = _ReadDependency();
+            List<string> dependencyList = new List<string>();
+            foreach(DictionaryEntry de in dependencyTable)
+            {
+                List<string> deValue = (List<string>)de.Value;
+                foreach(string d in deValue)
+                {
+                    if(!dependencyList.Contains(d))
+                    {
+                        dependencyList.Add(d);
+                    }
+                }
+            }
+
+            BuildPipeline.PushAssetDependencies();
+
+            foreach (string assetPath in dependencyList)
+            {
+                string srcPath = SrcPath(assetPath);
+                string dstPath = DstPath(assetPath) + "_s.unity3d";
+
+                UnityEngine.Object obj = AssetDatabase.LoadMainAssetAtPath(srcPath);
+                BuildPipeline.BuildAssetBundle(obj, null, dstPath, GetAssetOptions(),GetAssetTarget());
+            }
+
+            List<string> assetList = GetAllFile(src_path_list);
+            foreach (string assetPath in assetList)
+            {
+                BuildPipeline.PushAssetDependencies();
+
+                string srcPath = SrcPath(assetPath);
+                string dstPath = DstPath(assetPath) + ".unity3d";
+
+                UnityEngine.Object obj = AssetDatabase.LoadMainAssetAtPath(srcPath);
+                BuildPipeline.BuildAssetBundle(obj, null, dstPath, GetAssetOptions(), GetAssetTarget());
+
+                BuildPipeline.PopAssetDependencies();
+
+            }
+
+            BuildPipeline.PopAssetDependencies();
+        }
+
         static void _BuildDependencyDirectory(string src_path, Hashtable table)
         {
             if (!Directory.Exists(src_path))
@@ -100,12 +148,48 @@ namespace AssetLibrary.Editor
             return false;
         }
 
-        static string FullPath(string path)
+        static List<string> GetAllFile(string[] pathList)
+        {
+            List<string> fileList = new List<string>();
+            foreach (string path in pathList)
+            {
+                GetAllFileContainSub(path, ref fileList);
+            }
+            return fileList;
+        }
+
+        static List<string> GetAllFileContainSub(string path,ref List<string> fileList)
+        {
+            string[] files = Directory.GetFiles(path);
+            foreach(string filePath in files)
+            {
+                if (!IsIgnoreByFileExtensions(filePath))
+                {
+                    if(!fileList.Contains(filePath))
+                        fileList.Add(filePath);
+                }
+            }
+
+            string[] directoryList = Directory.GetDirectories(path);
+            foreach (string directory in directoryList)
+            {
+                fileList = GetAllFileContainSub(directory, ref fileList);
+            }
+
+            return fileList;
+        }
+
+        public virtual static string SrcPath(string path)
         {
             return Application.dataPath + "Assets/" + path;
         }
 
-        static void _WriteDependency(Hashtable table)
+        public virtual static string DstPath(string path)
+        {
+            return Application.dataPath + "Assets/StreamingAssets/Assets/" + path;
+        }
+
+        public virtual  static void _WriteDependency(Hashtable table)
         {
             FileStream stream = new FileStream("Assets/StreamingAssets/asset_dependency.txt", FileMode.Create, FileAccess.Write, FileShare.None);
             BinaryFormatter bf = new BinaryFormatter();
@@ -113,7 +197,7 @@ namespace AssetLibrary.Editor
             stream.Close();
         }
 
-        static Hashtable _ReadDependency()
+        public virtual  static Hashtable _ReadDependency()
         {
             FileStream stream = new FileStream("Assets/StreamingAssets/asset_dependency.txt", FileMode.Open, FileAccess.Read, FileShare.None);
             if (stream != null)
@@ -125,6 +209,17 @@ namespace AssetLibrary.Editor
                 return table;
             }
             return null;
+        }
+
+        public virtual static BuildAssetBundleOptions GetAssetOptions()
+        {
+            BuildAssetBundleOptions ao = BuildAssetBundleOptions.CollectDependencies | BuildAssetBundleOptions.CompleteAssets;
+            return ao;
+        }
+
+        public virtual static BuildTarget GetAssetTarget()
+        {
+            return BuildTarget.StandaloneWindows;
         }
     }
 }
