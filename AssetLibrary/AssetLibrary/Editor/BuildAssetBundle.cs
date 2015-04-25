@@ -24,7 +24,7 @@ namespace AssetLibrary.Editor
             Hashtable dependencyTable = new Hashtable();
             foreach(string src_path in src_path_list)
             {
-                _BuildDependencyDirectory(src_path, dependencyTable);
+                _BuildDependencyDirectory(src_path, ref dependencyTable);
             }
 
             _WriteDependency(dependencyTable);
@@ -78,7 +78,7 @@ namespace AssetLibrary.Editor
             BuildPipeline.PopAssetDependencies();
         }
 
-        static void _BuildDependencyDirectory(string src_path, Hashtable table)
+        static void _BuildDependencyDirectory(string src_path, ref Hashtable table)
         {
             if (!Directory.Exists(src_path))
             {
@@ -89,18 +89,18 @@ namespace AssetLibrary.Editor
             {
                 if (!IsIgnoreByFileExtensions(assetPath))
                 {
-                    _BuildDependencyAsset(assetPath, table);
+                    _BuildDependencyAsset(assetPath, ref table);
                 }
             }
 
             string[] directoryList = Directory.GetDirectories(src_path);
             foreach (string directory in directoryList)
             {
-                _BuildDependencyDirectory(directory,table);
+                _BuildDependencyDirectory(directory,ref table);
             }
         }
 
-        static void _BuildDependencyAsset(string asset_path, Hashtable table)
+        static void _BuildDependencyAsset(string asset_path, ref Hashtable table)
         {
             string[] dependList = AssetDatabase.GetDependencies(new string[] {asset_path});
             List<string> dependRealList = new List<string>();
@@ -179,17 +179,17 @@ namespace AssetLibrary.Editor
             return fileList;
         }
 
-        public virtual static string SrcPath(string path)
+        public static string SrcPath(string path)
         {
             return Application.dataPath + "Assets/" + path;
         }
 
-        public virtual static string DstPath(string path)
+        public static string DstPath(string path)
         {
-            return Application.dataPath + "Assets/StreamingAssets/Assets/" + path;
+            return Application.dataPath + "Assets/StreamingAssets/Assets_Win/" + path;
         }
 
-        public virtual  static void _WriteDependency(Hashtable table)
+        public static void _WriteDependency(Hashtable table)
         {
             FileStream stream = new FileStream("Assets/StreamingAssets/asset_dependency.txt", FileMode.Create, FileAccess.Write, FileShare.None);
             BinaryFormatter bf = new BinaryFormatter();
@@ -197,7 +197,7 @@ namespace AssetLibrary.Editor
             stream.Close();
         }
 
-        public virtual  static Hashtable _ReadDependency()
+        public static Hashtable _ReadDependency()
         {
             FileStream stream = new FileStream("Assets/StreamingAssets/asset_dependency.txt", FileMode.Open, FileAccess.Read, FileShare.None);
             if (stream != null)
@@ -211,13 +211,13 @@ namespace AssetLibrary.Editor
             return null;
         }
 
-        public virtual static BuildAssetBundleOptions GetAssetOptions()
+        public static BuildAssetBundleOptions GetAssetOptions()
         {
             BuildAssetBundleOptions ao = BuildAssetBundleOptions.CollectDependencies | BuildAssetBundleOptions.CompleteAssets;
             return ao;
         }
 
-        public virtual static BuildTarget GetAssetTarget()
+        public static BuildTarget GetAssetTarget()
         {
             return BuildTarget.StandaloneWindows;
         }
