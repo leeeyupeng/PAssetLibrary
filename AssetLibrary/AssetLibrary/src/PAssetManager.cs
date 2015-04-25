@@ -27,6 +27,7 @@ namespace AssetLibrary
         //<string,Asset>
         static Hashtable m_tableLoaded = new Hashtable();
         static Hashtable m_tableLoading = new Hashtable();
+
         //sender type != MonoBehaviour
         Dictionary<object, PAsset> m_dicLoader = new Dictionary<object, PAsset>();
 
@@ -96,6 +97,10 @@ namespace AssetLibrary
 
                 m_downLoad.DownLoad(assetName,LoadCallBack);
             }
+        }
+
+        public void AddToDownLoad(assetName)
+        {
         }
 
         public void UnLoadUnUseAsset()

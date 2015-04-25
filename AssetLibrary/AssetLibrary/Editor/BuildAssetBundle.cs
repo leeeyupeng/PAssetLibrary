@@ -19,7 +19,7 @@ namespace AssetLibrary.Editor
         [@MenuItem("AssetBundle/All/BuildDependencyDirectoryList")]
         public static void BuildDependencyDirectoryList()
         {
-            string[] src_path_list = new string[] { "Resources","Scene"};
+            string[] src_path_list = new string[] { "Resources"};
 
             Hashtable dependencyTable = new Hashtable();
             foreach(string src_path in src_path_list)
@@ -191,7 +191,7 @@ namespace AssetLibrary.Editor
 
         public static void _WriteDependency(Hashtable table)
         {
-            FileStream stream = new FileStream("Assets/StreamingAssets/asset_dependency.txt", FileMode.Create, FileAccess.Write, FileShare.None);
+            FileStream stream = new FileStream(DstPath("asset_dependency.txt"), FileMode.Create, FileAccess.Write, FileShare.None);
             BinaryFormatter bf = new BinaryFormatter();
             bf.Serialize(stream,table);
             stream.Close();
@@ -199,7 +199,7 @@ namespace AssetLibrary.Editor
 
         public static Hashtable _ReadDependency()
         {
-            FileStream stream = new FileStream("Assets/StreamingAssets/asset_dependency.txt", FileMode.Open, FileAccess.Read, FileShare.None);
+            FileStream stream = new FileStream(DstPath("asset_dependency.txt"), FileMode.Open, FileAccess.Read, FileShare.None);
             if (stream != null)
             {
                 Hashtable table;

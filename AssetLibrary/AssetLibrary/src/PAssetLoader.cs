@@ -6,28 +6,27 @@ namespace AssetLibrary
 {
     public class PAssetLoader
     {
-        public PAsset m_asset;
-        public Action<string,bool> m_action;
+        public string m_assetName;
+        public List<PAsset> m_asset;
 
-        public PAssetLoader(PAsset asset)
+        public PAssetLoader(string assetName)
         {
-            m_asset = asset;
-            m_action = asset.LoadCallBack;
+            m_assetName = assetName;
         }
 
         public void LoadSuccess(string name)
         {
-            if (m_action != null)
+            foreach (PAsset asset in m_asset)
             {
-                m_action(name,true);
+                asset.LoadCallBack(name,true);
             }
         }
 
         public void LoadFail(string name)
         {
-            if (m_action != null)
+            foreach (PAsset asset in m_asset)
             {
-                m_action(name, false);
+                asset.LoadCallBack(name, false);
             }
         }
     }
